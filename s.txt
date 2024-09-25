@@ -1,0 +1,13 @@
+      <View style={styles.display}>
+        <TextInput
+          style={styles.txtDspOper}
+          value={String(operacao)}
+          onChangeText={(text) => setOperacao(text)}
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.txtDspRes}
+          value={String(resultado)}
+          editable={false}
+        />
+      </View>

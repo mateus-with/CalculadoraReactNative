@@ -1,67 +1,56 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import Display from './components/Display';
+import Botao from './components/Botao';
 
 export default function App() {
+    const [operacao, setOperacao] = useState("");
+    const [resultado, setResultado] = useState(0);
 
-  const [valor1, setValor1] = useState(10);
-  const [valor2, setValor2] = useState(10);
-  const [resultado, setResultado] = useState(20);
+    const operar = () => {
+        try {
+            setResultado(eval(operacao));
+        } catch (e) {
+            setResultado("Erro"); 
+        }
+    };
 
-  const soma = () => {
-    const num1 = parseFloat(valor1);
-    const num2 = parseFloat(valor2);
-    setResultado(num1 + num2);
-  }
+    const adicionarOperacao = (label) => {
+        if (label === "=") {
+            operar();
+        } else if (label === "AC") {
+            setOperacao("")
+            setResultado(0);
+        } else if (label === "BS") {
+            setOperacao(operacao.slice(0, -1));
+        } else {
+            setOperacao(operacao + label);
+        }
+    };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text>Calculadora</Text>
-
-      <TextInput
-        style={styles.display}
-        value={String(valor1)}
-        onChangeText={(text) => setValor1(text)}
-        keyboardType="numeric"
-      />
-
-      <TextInput
-        style={styles.display}
-        value={String(valor2)}
-        onChangeText={(text) => setValor2(text)}
-        keyboardType="numeric"
-      />
-
-      <TextInput
-        style={styles.display}
-        value={String(resultado)}
-        editable={false}
-      />
-
-      <TouchableHighlight onPress={soma}>
-        <View>
-          <Text style={styles.btn}>Somar</Text>
-        </View>
-      </TouchableHighlight>
-
-      <StatusBar style="auto" />
-    </SafeAreaView>
-  );
+    return (
+        <SafeAreaView style={styles.container}>
+            <Display valor={operacao} res={resultado} />
+            <View style={styles.botoes}>
+                {["AC", "BS", "/", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "0", ".", "="].map((label) => (
+                    <Botao key={label} label={label} onClick={() => adicionarOperacao(label)} />
+                ))}
+            </View>
+            <StatusBar style="auto" />
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  display: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
-  },
-  btn: {
-    backgroundColor: '#aaa',
-    padding: 20,
-    textAlign: 'center',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    botoes: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+    },
 });
